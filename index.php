@@ -48,6 +48,7 @@
                         <th>Apellido Paterno</th>
                         <th>Apellido Materno</th>
                         <th>Nombre</th>
+                        <th>Activo</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -80,6 +81,10 @@
                                 <label for="nombre" class="form-label">Nombre(s)</label>
                                 <input type="text" class="form-control" id="nombre" required>
                             </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="estado">
+                                <label class="form-check-label" for="estado">Activo</label>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -110,6 +115,12 @@
                     { "data": "paterno" },
                     { "data": "materno" },
                     { "data": "nombre" },
+                    {
+                        "data": "estado",
+                        "render": function(data, type, row) {
+                            return data == '1' ? 'Sí' : 'No';
+                        }
+                    },
                     {
                         "data": null,
                         "render": function(data, type, row) {
@@ -150,6 +161,7 @@
                 $('#modalTitle').text('Agregar Persona');
                 $('#personForm')[0].reset();
                 $('#personId').val('');
+                $('#estado').prop('checked', true);
                 $('#personModal').modal('show');
             });
 
@@ -159,7 +171,8 @@
                     id: $('#personId').val(),
                     paterno: $('#paterno').val(),
                     materno: $('#materno').val(),
-                    nombre: $('#nombre').val()
+                    nombre: $('#nombre').val(),
+                    estado: $('#estado').is(':checked') ? '1' : '0'
                 };
 
                 const action = formData.id ? 'update' : 'create';
@@ -198,6 +211,7 @@
                             $('#paterno').val(response.data.paterno);
                             $('#materno').val(response.data.materno);
                             $('#nombre').val(response.data.nombre);
+                            $('#estado').prop('checked', response.data.estado == '1');
                             $('#personModal').modal('show');
                         } else {
                             alert('Error: ' + response.message);
